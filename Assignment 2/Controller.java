@@ -29,7 +29,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	
 	public void mousePressed(MouseEvent e)
 	{
-		
+		model.mousePressed(e.getX(), e.getY(), view.scrollPos);
 	}
 
 	public void mouseReleased(MouseEvent e) {    }
@@ -45,6 +45,8 @@ class Controller implements ActionListener, MouseListener, KeyListener
 			case KeyEvent.VK_LEFT: keyLeft = true; break;
 			case KeyEvent.VK_UP: keyUp = true; break;
 			case KeyEvent.VK_DOWN: keyDown = true; break;
+			case KeyEvent.VK_S: model.saveState(); break;
+			case KeyEvent.VK_L: model.loadState(); break;
 		}
 	}
 
@@ -65,7 +67,13 @@ class Controller implements ActionListener, MouseListener, KeyListener
 
 	void update()
 	{
-		
+		int scrollSpeed = 2;
+		if(keyLeft){
+			view.scroll(-1*scrollSpeed);
+		}
+		if(keyRight){
+			view.scroll(scrollSpeed);
+		}
 	}
 	
 }

@@ -14,7 +14,7 @@ public class Game extends JFrame
 		view = new View(controller, model);
 		
 		//Setting JFrame settings
-		this.setTitle("Turtle attack!");
+		this.setTitle("Totally Tubular");
 		this.setSize(500, 500);
 		this.getContentPane().add(view);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
