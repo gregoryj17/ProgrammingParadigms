@@ -1,14 +1,16 @@
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
+
 class Model
 {
 	ArrayList<Tube> tubes;
+	Mario mario;
 
 	Model()
 	{
 		tubes = new ArrayList<Tube>();
-		/*Tube t = new Tube(400, 300);
-		tubes.add(t);*/
+		mario = new Mario();
 	}
 
 	public void mousePressed(int x, int y, int scrollPos){
@@ -51,8 +53,19 @@ class Model
 
 	public void update()
 	{
-		
+		mario.update();
 	}
+
+	boolean legalMarioMove(int scrollAmount,int scrollPos){
+        Iterator<Tube> it = tubes.iterator();
+        while(it.hasNext()){
+            Tube t = it.next();
+            if(mario.collidesWith(t.x,t.y,t.w,t.h,scrollAmount,scrollPos)){
+                return false;
+            }
+        }
+	    return true;
+    }
 
 }
 

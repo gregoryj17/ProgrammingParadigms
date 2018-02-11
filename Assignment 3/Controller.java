@@ -13,6 +13,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	boolean keyRight;
 	boolean keyUp;
 	boolean keyDown;
+	boolean keySpace;
 	
 	Controller(Model m)
 	{
@@ -35,7 +36,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	public void mouseReleased(MouseEvent e) {    }
 	public void mouseEntered(MouseEvent e) {    }
 	public void mouseExited(MouseEvent e) {    }
-	public void mouseClicked(MouseEvent e) {    }
+	public void mouseClicked(MouseEvent e) {	}
 	
 	public void keyPressed(KeyEvent e)
 	{
@@ -47,6 +48,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 			case KeyEvent.VK_DOWN: keyDown = true; break;
 			case KeyEvent.VK_S: model.saveState(); break;
 			case KeyEvent.VK_L: model.loadState(); break;
+            case KeyEvent.VK_SPACE: keySpace = true; break;
 		}
 	}
 
@@ -58,6 +60,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 			case KeyEvent.VK_LEFT: keyLeft = false; break;
 			case KeyEvent.VK_UP: keyUp = false; break;
 			case KeyEvent.VK_DOWN: keyDown = false; break;
+            case KeyEvent.VK_SPACE: keySpace = false; break;
 		}
 	}
 
@@ -67,13 +70,17 @@ class Controller implements ActionListener, MouseListener, KeyListener
 
 	void update()
 	{
-		int scrollSpeed = 2;
+		int scrollSpeed = 4;
 		if(keyLeft){
 			view.scroll(-1*scrollSpeed);
 		}
 		if(keyRight){
 			view.scroll(scrollSpeed);
 		}
+		if(keyUp||keySpace){
+		    model.mario.jump();
+        }
+        model.mario.moving(keyLeft,keyRight);
 	}
 	
 }

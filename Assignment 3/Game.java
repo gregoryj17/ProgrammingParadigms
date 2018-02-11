@@ -1,4 +1,5 @@
-import javax.swing.JFrame;
+import javax.swing.*;
+import java.awt.*;
 
 public class Game extends JFrame
 {
@@ -31,6 +32,7 @@ public class Game extends JFrame
 			controller.update();
 			model.update();
 			view.repaint(); // Indirectly calls View.paintComponent
+			Toolkit.getDefaultToolkit().sync(); // Updates screen
 
 			// Go to sleep for 50 miliseconds
 			try
