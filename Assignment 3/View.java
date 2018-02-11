@@ -8,9 +8,6 @@ import javax.swing.JButton;
 
 class View extends JPanel
 {
-	JButton b1;
-	BufferedImage tube_image;
-	BufferedImage[] mario_images;
 	Model model;
 	int scrollPos;
 
@@ -19,18 +16,6 @@ class View extends JPanel
 		//Setting member variables
 		c.setView(this);
 		this.model=m;
-		try{
-			this.tube_image = ImageIO.read(new File("tube.png"));
-            mario_images = new BufferedImage[5];
-            mario_images[0] = loadImage("mario1.png");
-            mario_images[1] = loadImage("mario2.png");
-            mario_images[2] = loadImage("mario3.png");
-            mario_images[3] = loadImage("mario4.png");
-            mario_images[4] = loadImage("mario5.png");
-		}catch(Exception e){
-			e.printStackTrace(System.err);
-			System.exit(1);
-		}
 	}
 	
 	void scroll(int scrollAmount){
@@ -47,12 +32,12 @@ class View extends JPanel
 		for(int i = findFirstTubeOnScreen(); i < model.tubes.size(); i++)
 		{
 			Tube t = model.tubes.get(i);
-			g.drawImage(tube_image, t.x - scrollPos, t.y, null);
+			g.drawImage(t.getImage(), t.x - scrollPos, t.y, null);
 			if(t.x - scrollPos > this.getWidth()){
 				break;
 			}
 		}
-		g.drawImage(mario_images[model.mario.pic], model.mario.x, model.mario.y, null);
+		g.drawImage(model.mario.getImage(), model.mario.x, model.mario.y, null);
 	}
 	
 	int findFirstTubeOnScreen()
@@ -71,16 +56,5 @@ class View extends JPanel
 				end = mid;
 		}
 	}
-
-	BufferedImage loadImage(String filename){
-	    BufferedImage b;
-	    try{
-	        b=ImageIO.read(new File(filename));
-        }catch(Exception e){
-	        e.printStackTrace();
-	        throw new RuntimeException(e);
-        }
-        return b;
-    }
 	
 }

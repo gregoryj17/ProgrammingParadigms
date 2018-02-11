@@ -53,6 +53,7 @@ class Model
 
 	public void update()
 	{
+	    marioDropDistance();
 		mario.update();
 	}
 
@@ -65,6 +66,20 @@ class Model
             }
         }
 	    return true;
+    }
+
+    void marioDropDistance(){
+	    int dropDistance = Integer.MAX_VALUE;
+        Iterator<Tube> it = tubes.iterator();
+        while(it.hasNext()){
+            Tube t = it.next();
+            if(mario.collidesX(t.x,t.w)){
+                if((t.y-(mario.y+mario.height))<dropDistance){
+                    dropDistance = (t.y-(mario.y+mario.height));
+                }
+            }
+        }
+        mario.setDropDistance(dropDistance);
     }
 
 }

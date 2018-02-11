@@ -1,8 +1,13 @@
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
 public class Tube{
 	
 	//Tube position
 	int x,y;
 	final int w=55,h=400;
+	static BufferedImage image;
 	
 	//Constructs a tube with a position
 	public Tube(int x, int y){
@@ -24,6 +29,18 @@ public class Tube{
 		ob.add("x",x);
 		ob.add("y",y);
 		return ob;
+	}
+
+	BufferedImage getImage(){
+		try{
+			if(image==null){
+				image=ImageIO.read(new File("tube.png"));
+			}
+		}catch(Exception e){
+			e.printStackTrace(System.err);
+			System.exit(1);
+		}
+		return image;
 	}
 	
 }
