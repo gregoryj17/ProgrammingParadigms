@@ -15,16 +15,20 @@ public class Mario {
     int pic=0;
     boolean moving=false;
     int scrollPos;
-    int dropDistance;
+    int dropDistance, jumpDistance;
     static BufferedImage[] images = new BufferedImage[5];
 
     void update()
     {
         vert_vel += 1.2;
-        if(dropDistance<vert_vel){
+        if(vert_vel>0&&dropDistance<vert_vel){
             y+=dropDistance;
             vert_vel=0.0;
             lastGrounded=frame;
+        }
+        else if(vert_vel<0&&jumpDistance>vert_vel){
+            y+=jumpDistance;
+            vert_vel=0.0;
         }
         else{
             y += vert_vel;
@@ -51,21 +55,25 @@ public class Mario {
 
     boolean collidesWith(int x, int y, int w, int h, int scrollAmount, int scrollPos){
         this.scrollPos=scrollPos;
-        if((x-scrollPos)>(this.x+scrollAmount+width))return false;
-        if((this.x+scrollAmount)>(x-scrollPos+w))return false;
-        if(y+1>(this.y+height))return false;
-        if(this.y>(y+h))return false;
+        if((x-scrollPos)>=(this.x+scrollAmount+width))return false;
+        if((this.x+scrollAmount)>=(x-scrollPos+w))return false;
+        if(y>=(this.y+height))return false;
+        if(this.y>=(y+h))return false;
         return true;
     }
 
     boolean collidesX(int x, int w){
-        if((x-scrollPos)>(this.x+width))return false;
-        if((this.x)>(x-scrollPos+w))return false;
+        if((x-scrollPos)>=(this.x+width))return false;
+        if((this.x)>=(x-scrollPos+w))return false;
         return true;
     }
 
     void setDropDistance(int dd){
         dropDistance=dd;
+    }
+
+    void setJumpDistance(int jd){
+        jumpDistance=jd;
     }
 
     BufferedImage getImage(){

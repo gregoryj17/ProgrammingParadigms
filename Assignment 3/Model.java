@@ -54,6 +54,7 @@ class Model
 	public void update()
 	{
 	    marioDropDistance();
+	    marioJumpDistance();
 		mario.update();
 	}
 
@@ -74,12 +75,26 @@ class Model
         while(it.hasNext()){
             Tube t = it.next();
             if(mario.collidesX(t.x,t.w)){
-                if((t.y-(mario.y+mario.height))<dropDistance){
+                if((t.y+t.h>mario.y)&&(t.y-(mario.y+mario.height))<dropDistance){
                     dropDistance = (t.y-(mario.y+mario.height));
                 }
             }
         }
         mario.setDropDistance(dropDistance);
+    }
+
+    void marioJumpDistance(){
+        int jumpDistance = Integer.MIN_VALUE;
+        Iterator<Tube> it = tubes.iterator();
+        while(it.hasNext()){
+            Tube t = it.next();
+            if(mario.collidesX(t.x,t.w)){
+                if((mario.y+mario.height>t.y)&&(t.y+t.h-mario.y)>jumpDistance){
+                    jumpDistance = (t.y+t.h-mario.y);
+                }
+            }
+        }
+        mario.setJumpDistance(jumpDistance);
     }
 
 }
