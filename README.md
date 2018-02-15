@@ -1,4 +1,4 @@
-This reposity is for my Programming Paradigms assignments.
+This repository is for my Programming Paradigms assignments.
 
 ---------------------------------------------------------------------
 
