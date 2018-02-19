@@ -1,45 +1,74 @@
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-public class Mario {
+public class Mario extends Sprite {
 
-    final int w=60, h=95;
-
-    int x=200;
-    int y=0;
     double vert_vel=0;
     int frame;
     int lastGrounded;
     int pic=0;
     boolean moving=false;
-    int scrollPos;
-    int dropDistance, jumpDistance;
     static BufferedImage[] images = new BufferedImage[5];
+    int prevX,prevY;
+
+    public Mario(Model model){
+    	x=200;
+    	y=0;
+    	w=60;
+    	h=95;
+		m=model;
+	}
 
     void update()
     {
-        vert_vel += 1.2;
-        if(vert_vel>0&&dropDistance<vert_vel){
-            y+=dropDistance;
-            vert_vel=0.0;
-            lastGrounded=frame;
-        }
-        else if(vert_vel<0&&jumpDistance>vert_vel){
-            y+=jumpDistance;
-            vert_vel=0.0;
-        }
-        else{
-            y += vert_vel;
-        }
-        if(y > 500)
-        {
-            vert_vel = 0.0;
-            y = 500; // snap back to the ground
-            lastGrounded=frame;
-        }
+		vert_vel += 1.2;
+		prevY=y;
+		y += vert_vel;
+		if(y > 500)
+		{
+			vert_vel = 0.0;
+			y = 500; // snap back to the ground
+			lastGrounded=frame;
+		}
+		prevX=x;
+		x=m.scrollPos+200;
+
+
+		for(Sprite s : m.sprites){
+			if(collidesWith(s)){
+				getOutOfTube(s);
+			}
+		}
+
         frame++;
         if(moving)pic=(pic+1)%5;
+    }
+
+    void getOutOfTube(Sprite s){
+    	if(prevX+w<s.x&&x+w>=s.x){
+    		x=s.x-w-1;
+    		m.scrollPos=x-200;
+		}
+		else if(prevX>s.x+s.w&&x<=s.x+s.w){
+    		x=s.x+s.w+1;
+    		m.scrollPos=x-200;
+		}
+
+		if(prevY+h<s.y&&y+h>=s.y){
+    		y=s.y-h-1;
+    		vert_vel=0;
+    		lastGrounded=frame;
+		}
+		else if(prevY>s.y+s.h&&y<=s.y+s.h){
+    		y=s.h+s.h+1;
+    		vert_vel=0;
+		}
+	}
+
+    void draw(Graphics g){
+		g.drawImage(getImage(),x-m.scrollPos,y,null);
     }
 
     void jump(){
@@ -50,29 +79,6 @@ public class Mario {
 
     void moving(boolean left, boolean right){
         moving = ((left^right)||vert_vel!=0);
-    }
-
-    boolean collidesWith(int x, int y, int w, int h, int scrollAmount, int scrollPos){
-        this.scrollPos=scrollPos;
-        if((x-scrollPos)>=(this.x+scrollAmount+ this.w))return false;
-        if((this.x+scrollAmount)>=(x-scrollPos+w))return false;
-        if(y>=(this.y+ this.h))return false;
-        if(this.y>=(y+h))return false;
-        return true;
-    }
-
-    boolean collidesX(int x, int w){
-        if((x-scrollPos)>=(this.x+ this.w))return false;
-        if((this.x)>=(x-scrollPos+w))return false;
-        return true;
-    }
-
-    void setDropDistance(int dd){
-        dropDistance=dd;
-    }
-
-    void setJumpDistance(int jd){
-        jumpDistance=jd;
     }
 
     BufferedImage getImage(){

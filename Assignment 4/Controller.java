@@ -30,7 +30,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	
 	public void mousePressed(MouseEvent e)
 	{
-		model.mousePressed(e.getX(), e.getY(), view.scrollPos);
+		model.mousePressed(e.getX(), e.getY(), model.scrollPos);
 	}
 
 	public void mouseReleased(MouseEvent e) {    }
@@ -72,10 +72,10 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	{
 		int scrollSpeed = 4;
 		if(keyLeft){
-			view.scroll(-1*scrollSpeed);
+			model.scroll(-1*scrollSpeed);
 		}
 		if(keyRight){
-			view.scroll(scrollSpeed);
+			model.scroll(scrollSpeed);
 		}
 		if(keyUp||keySpace){
 		    model.mario.jump();

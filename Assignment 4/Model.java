@@ -4,105 +4,73 @@ import java.util.Iterator;
 
 class Model
 {
-	ArrayList<Tube> tubes;
+	ArrayList<Sprite> sprites;
 	Mario mario;
+	int scrollPos;
 
 	Model()
 	{
-		tubes = new ArrayList<Tube>();
-		mario = new Mario();
+		sprites = new ArrayList<Sprite>();
+		mario = new Mario(this);
+		sprites.add(mario);
 	}
 
 	public void mousePressed(int x, int y, int scrollPos){
 		boolean tubeClicked = false;
-		for(Tube t : tubes){
-			if(t.wasClicked(x+scrollPos, y)){
-				tubes.remove(t);
+		for(Sprite t : sprites){
+			if(t instanceof Mario)continue;
+			if(((Tube)t).wasClicked(x+scrollPos, y)){
+				sprites.remove(t);
 				tubeClicked = true;
 				break;
 			}
 		}
 		if(!tubeClicked){
 			Tube t = new Tube(x+scrollPos, y);
-			tubes.add(t);
+			sprites.add(t);
 			TubeComparator tc = new TubeComparator();
-			tubes.sort(tc);
+			sprites.sort(tc);
 		}
+	}
+
+	void scroll(int scrollAmount){
+		scrollPos += scrollAmount;
 	}
 
 	void saveState(){
 		Json ob = Json.newObject();
 		Json tmpList = Json.newList();
 		ob.add("Tubes", tmpList);
-		for(int i = 0; i < tubes.size(); i++){
-			tmpList.add(tubes.get(i).marshal());
+		for(int i = 0; i < sprites.size(); i++){
+			if(!(sprites.get(i) instanceof Mario))tmpList.add(((Tube)sprites.get(i)).marshal());
 		}
 		ob.save("model.json");
 		System.out.println("Current state saved.");
 	}
 	
 	void loadState(){
-		tubes = new ArrayList<Tube>();
+		sprites = new ArrayList<Sprite>();
 		Json ob = Json.load("model.json");
 		Json list = ob.get("Tubes");
 		for(int i=0; i<list.size(); i++){
-			tubes.add(new Tube(list.get(i)));
+			sprites.add(new Tube(list.get(i)));
 		}
 		System.out.println("Previous state loaded.");
 	}
 
 	public void update()
 	{
-	    marioDropDistance();
-	    marioJumpDistance();
-		mario.update();
+		for(Sprite s : sprites){
+			s.update();
+		}
 	}
-
-	boolean legalMarioMove(int scrollAmount,int scrollPos){
-        Iterator<Tube> it = tubes.iterator();
-        while(it.hasNext()){
-            Tube t = it.next();
-            if(mario.collidesWith(t.x,t.y,t.w,t.h,scrollAmount,scrollPos)){
-                return false;
-            }
-        }
-	    return true;
-    }
-
-    void marioDropDistance(){
-	    int dropDistance = Integer.MAX_VALUE;
-        Iterator<Tube> it = tubes.iterator();
-        while(it.hasNext()){
-            Tube t = it.next();
-            if(mario.collidesX(t.x,t.w)){
-                if((t.y+t.h>mario.y)&&(t.y-(mario.y+mario.h))<dropDistance){
-                    dropDistance = (t.y-(mario.y+mario.h));
-                }
-            }
-        }
-        mario.setDropDistance(dropDistance);
-    }
-
-    void marioJumpDistance(){
-        int jumpDistance = Integer.MIN_VALUE;
-        Iterator<Tube> it = tubes.iterator();
-        while(it.hasNext()){
-            Tube t = it.next();
-            if(mario.collidesX(t.x,t.w)){
-                if((mario.y+mario.h >t.y)&&(t.y+t.h-mario.y)>jumpDistance){
-                    jumpDistance = (t.y+t.h-mario.y);
-                }
-            }
-        }
-        mario.setJumpDistance(jumpDistance);
-    }
 
 }
 
 
-class TubeComparator implements Comparator<Tube>
+class TubeComparator implements Comparator<Sprite>
 {
-	public int compare(Tube a, Tube b)
+	public int compare(Sprite a, Sprite b)
 	{
 		if(a.x < b.x)
 			return -1;

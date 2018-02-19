@@ -16,7 +16,7 @@ public class Game extends JFrame
 		
 		//Setting JFrame settings
 		this.setTitle("Totally Tubular");
-		this.setSize(500, 500);
+		this.setSize(600, 600);
 		this.getContentPane().add(view);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
