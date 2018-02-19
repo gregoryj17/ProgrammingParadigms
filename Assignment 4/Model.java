@@ -18,7 +18,7 @@ class Model
 	public void mousePressed(int x, int y, int scrollPos){
 		boolean tubeClicked = false;
 		for(Sprite t : sprites){
-			if(t instanceof Mario)continue;
+			if(!(t instanceof Tube))continue;
 			if(((Tube)t).wasClicked(x+scrollPos, y)){
 				sprites.remove(t);
 				tubeClicked = true;
@@ -31,6 +31,11 @@ class Model
 			TubeComparator tc = new TubeComparator();
 			sprites.sort(tc);
 		}
+	}
+
+	public void goombo(int x, int y){
+		Goomba g = new Goomba(x,y);
+		sprites.add(g);
 	}
 
 	void scroll(int scrollAmount){

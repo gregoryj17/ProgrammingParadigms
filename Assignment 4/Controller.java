@@ -14,6 +14,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	boolean keyUp;
 	boolean keyDown;
 	boolean keySpace;
+	boolean keyG;
 	
 	Controller(Model m)
 	{
@@ -31,6 +32,9 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	public void mousePressed(MouseEvent e)
 	{
 		model.mousePressed(e.getX(), e.getY(), model.scrollPos);
+		if(keyG){
+			model.goombo(e.getX()+model.scrollPos,e.getY());
+		}
 	}
 
 	public void mouseReleased(MouseEvent e) {    }
@@ -49,6 +53,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 			case KeyEvent.VK_S: model.saveState(); break;
 			case KeyEvent.VK_L: model.loadState(); break;
             case KeyEvent.VK_SPACE: keySpace = true; break;
+			case KeyEvent.VK_G: keyG = true; break;
 		}
 	}
 
@@ -61,6 +66,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 			case KeyEvent.VK_UP: keyUp = false; break;
 			case KeyEvent.VK_DOWN: keyDown = false; break;
             case KeyEvent.VK_SPACE: keySpace = false; break;
+			case KeyEvent.VK_G: keyG = false; break;
 		}
 	}
 
