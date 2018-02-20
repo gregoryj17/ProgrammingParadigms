@@ -14,7 +14,9 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	boolean keyUp;
 	boolean keyDown;
 	boolean keySpace;
-	boolean keyG;
+	boolean editMode=false;
+	int editType=0;
+
 	
 	Controller(Model m)
 	{
@@ -31,8 +33,8 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	
 	public void mousePressed(MouseEvent e)
 	{
-		/*model.mousePressed(e.getX(), e.getY(), model.scrollPos);
-		if(keyG){
+		if(editMode)model.mousePressed(e.getX(), e.getY(), editType);
+		/*if(keyG){
 			model.spawnGoomba(e.getX()+model.scrollPos,478);
 		}*/
 	}
@@ -53,8 +55,20 @@ class Controller implements ActionListener, MouseListener, KeyListener
 			case KeyEvent.VK_S: model.saveState(); break;
 			case KeyEvent.VK_L: model.loadState(); break;
             case KeyEvent.VK_SPACE: keySpace = true; break;
-			case KeyEvent.VK_G: keyG = true; break;
 			case KeyEvent.VK_CONTROL: model.shootFlame(); break;
+			case KeyEvent.VK_COMMA:{
+				editMode=!editMode;
+				if(editMode) System.out.println("Edit mode enabled.");
+				else System.out.println("Edit mode disabled.");
+				break;
+			}
+			case KeyEvent.VK_PERIOD:{
+				editType=(editType+1)%3;
+				if(editType==0) System.out.println("Changed mode to tube.");
+				else if(editType==1) System.out.println("Changed mode to goomba.");
+				else System.out.println("Changed mode to fireball.");
+				break;
+			}
 		}
 	}
 
@@ -67,7 +81,6 @@ class Controller implements ActionListener, MouseListener, KeyListener
 			case KeyEvent.VK_UP: keyUp = false; break;
 			case KeyEvent.VK_DOWN: keyDown = false; break;
             case KeyEvent.VK_SPACE: keySpace = false; break;
-			case KeyEvent.VK_G: keyG = false; break;
 		}
 	}
 

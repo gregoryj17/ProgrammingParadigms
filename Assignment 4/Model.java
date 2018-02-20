@@ -15,21 +15,31 @@ class Model
 		sprites.add(mario);
 	}
 
-	public void mousePressed(int x, int y, int scrollPos){
-		boolean tubeClicked = false;
-		for(Sprite t : sprites){
-			if(!(t instanceof Tube))continue;
-			if(((Tube)t).wasClicked(x+scrollPos, y)){
-				sprites.remove(t);
-				tubeClicked = true;
-				break;
+	public void mousePressed(int x, int y, int type){
+		if(type==0) {
+			boolean tubeClicked = false;
+			for (Sprite t : sprites) {
+				if (!(t instanceof Tube)) continue;
+				if (((Tube) t).wasClicked(x + scrollPos, y)) {
+					sprites.remove(t);
+					tubeClicked = true;
+					break;
+				}
+			}
+			if (!tubeClicked) {
+				Tube t = new Tube(x + scrollPos, y);
+				sprites.add(t);
+				TubeComparator tc = new TubeComparator();
+				sprites.sort(tc);
 			}
 		}
-		if(!tubeClicked){
-			Tube t = new Tube(x+scrollPos, y);
-			sprites.add(t);
-			TubeComparator tc = new TubeComparator();
-			sprites.sort(tc);
+		else if(type==1){
+			Goomba g=new Goomba(x,y);
+			sprites.add(g);
+		}
+		else if(type==2){
+			Fireball f=new Fireball(x,y);
+			sprites.add(f);
 		}
 	}
 
