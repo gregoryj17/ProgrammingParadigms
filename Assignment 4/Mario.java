@@ -83,7 +83,7 @@ public class Mario extends Sprite {
 		if(prevY+h<s.y&&y+h>=s.y){
 			y=s.y-h-1;
 			vert_vel=-20;
-			lastGrounded=frame;
+			lastGrounded=frame-4;
 			s.toRemove=true;
 		}
 		else if(prevY>s.y+s.h&&y<=s.y+s.h){

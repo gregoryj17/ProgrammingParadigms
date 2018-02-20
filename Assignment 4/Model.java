@@ -109,6 +109,20 @@ class Model
 		if(!silent)System.out.println("Previous state loaded.");
 	}
 
+	void loadState(String filename){
+		sprites = new ArrayList<Sprite>();
+		sprites.add(mario);
+		Json ob = Json.load(filename);
+		Json list = ob.get("Tubes");
+		for(int i=0; i<list.size(); i++){
+			sprites.add(new Tube(list.get(i)));
+		}
+		list = ob.get("Goombas");
+		for(int i=0; i<list.size(); i++){
+			sprites.add(new Goomba(list.get(i)));
+		}
+	}
+
 	public void update()
 	{
 		for(Sprite s : sprites){

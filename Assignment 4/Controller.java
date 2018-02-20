@@ -31,10 +31,10 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	
 	public void mousePressed(MouseEvent e)
 	{
-		model.mousePressed(e.getX(), e.getY(), model.scrollPos);
+		/*model.mousePressed(e.getX(), e.getY(), model.scrollPos);
 		if(keyG){
 			model.spawnGoomba(e.getX()+model.scrollPos,478);
-		}
+		}*/
 	}
 
 	public void mouseReleased(MouseEvent e) {    }
