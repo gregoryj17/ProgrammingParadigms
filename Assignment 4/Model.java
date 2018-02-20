@@ -52,20 +52,61 @@ class Model
 		Json tmpList = Json.newList();
 		ob.add("Tubes", tmpList);
 		for(int i = 0; i < sprites.size(); i++){
-			if(!(sprites.get(i) instanceof Mario))tmpList.add(((Tube)sprites.get(i)).marshal());
+			if((sprites.get(i) instanceof Tube))tmpList.add(((Tube)sprites.get(i)).marshal());
+		}
+		Json gmbaList = Json.newList();
+		ob.add("Goombas",gmbaList);
+		for(Sprite s : sprites){
+			if(s instanceof Goomba)gmbaList.add(((Goomba)(s)).marshal());
 		}
 		ob.save("model.json");
 		System.out.println("Current state saved.");
 	}
+
+	void saveState(boolean silent){
+		Json ob = Json.newObject();
+		Json tmpList = Json.newList();
+		ob.add("Tubes", tmpList);
+		for(int i = 0; i < sprites.size(); i++){
+			if((sprites.get(i) instanceof Tube))tmpList.add(((Tube)sprites.get(i)).marshal());
+		}
+		Json gmbaList = Json.newList();
+		ob.add("Goombas",gmbaList);
+		for(Sprite s : sprites){
+			if(s instanceof Goomba)gmbaList.add(((Goomba)(s)).marshal());
+		}
+		ob.save("model.json");
+		if(!silent)System.out.println("Current state saved.");
+	}
 	
 	void loadState(){
 		sprites = new ArrayList<Sprite>();
+		sprites.add(mario);
 		Json ob = Json.load("model.json");
 		Json list = ob.get("Tubes");
 		for(int i=0; i<list.size(); i++){
 			sprites.add(new Tube(list.get(i)));
 		}
+		list = ob.get("Goombas");
+		for(int i=0; i<list.size(); i++){
+			sprites.add(new Goomba(list.get(i)));
+		}
 		System.out.println("Previous state loaded.");
+	}
+
+	void loadState(boolean silent){
+		sprites = new ArrayList<Sprite>();
+		sprites.add(mario);
+		Json ob = Json.load("model.json");
+		Json list = ob.get("Tubes");
+		for(int i=0; i<list.size(); i++){
+			sprites.add(new Tube(list.get(i)));
+		}
+		list = ob.get("Goombas");
+		for(int i=0; i<list.size(); i++){
+			sprites.add(new Goomba(list.get(i)));
+		}
+		if(!silent)System.out.println("Previous state loaded.");
 	}
 
 	public void update()

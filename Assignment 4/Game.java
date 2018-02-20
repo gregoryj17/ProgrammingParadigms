@@ -15,7 +15,7 @@ public class Game extends JFrame
 		view = new View(controller, model);
 		
 		//Setting JFrame settings
-		this.setTitle("Totally Tubular");
+		this.setTitle("Mario Game");
 		this.setSize(600, 600);
 		this.getContentPane().add(view);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -23,6 +23,9 @@ public class Game extends JFrame
 		view.addMouseListener(controller);
 		this.addKeyListener(controller);
 		this.setFocusable(true);
+
+		model.loadState(true);
+
 	}
 
 	public void run()

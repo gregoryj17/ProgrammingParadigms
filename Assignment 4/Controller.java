@@ -33,7 +33,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	{
 		model.mousePressed(e.getX(), e.getY(), model.scrollPos);
 		if(keyG){
-			model.spawnGoomba(e.getX()+model.scrollPos,e.getY());
+			model.spawnGoomba(e.getX()+model.scrollPos,478);
 		}
 	}
 
@@ -77,7 +77,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 
 	void update()
 	{
-		int scrollSpeed = 4;
+		int scrollSpeed = 6;
 		if(keyLeft){
 			model.scroll(-1*scrollSpeed);
 		}

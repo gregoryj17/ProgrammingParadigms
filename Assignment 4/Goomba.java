@@ -20,11 +20,22 @@ public class Goomba extends Sprite {
 		this.x=x;
 		this.y=y;
 		right=true;
-		turnSteps=30;
+		turnSteps=300;
 		curSteps=0;
 		w=99;
 		h=118;
 	}
+
+	public Goomba(Json json){
+		this.x=(int)json.getLong("x");
+		this.y=(int)json.getLong("y");
+		right=json.getBool("right");
+		turnSteps=(int)json.getLong("turnSteps");
+		curSteps=(int)json.getLong("curSteps");
+		w=99;
+		h=118;
+	}
+
 
 	void update() {
 		prevX=x;
@@ -56,6 +67,8 @@ public class Goomba extends Sprite {
 		else if(prevX>s.x+s.w&&x<=s.x+s.w){
 			x=s.x+s.w+1;
 		}
+		curSteps=0;
+		right=!right;
 	}
 
 	void draw(Graphics g){
@@ -76,6 +89,16 @@ public class Goomba extends Sprite {
 		}
 		if(burnedframe!=-1)return burnedimage;
 		return image;
+	}
+
+	Json marshal(){
+		Json ob = Json.newObject();
+		ob.add("x",x);
+		ob.add("y",y);
+		ob.add("right",right);
+		ob.add("turnSteps",turnSteps);
+		ob.add("curSteps",curSteps);
+		return ob;
 	}
 
 }

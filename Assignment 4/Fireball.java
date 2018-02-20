@@ -7,7 +7,7 @@ public class Fireball extends Sprite {
 
 	static BufferedImage image;
 	double vert_vel=0;
-	double horiz_vel=2;
+	double horiz_vel=4;
 	int prevX,prevY;
 
 	public Fireball(int xx, int yy){
@@ -23,13 +23,13 @@ public class Fireball extends Sprite {
 		y += vert_vel;
 		if(y > 548)
 		{
-			vert_vel-=1;
+			vert_vel-=0.5;
 			vert_vel *= -1.0;
 			y = 548; // snap back to the ground
 		}
 		prevX=x;
 		x+=horiz_vel;
-		if(x-m.scrollPos>1500||x-m.scrollPos<0){
+		if(x-m.scrollPos>1600||x-m.scrollPos<-50){
 			toRemove=true;
 		}
 		for(Sprite s : m.sprites){
