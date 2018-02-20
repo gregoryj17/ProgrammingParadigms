@@ -6,6 +6,7 @@ public abstract class Sprite {
 
     int x,y,w,h;
     static Model m;
+    boolean toRemove = false;
 
     abstract void update();
 

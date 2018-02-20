@@ -6,11 +6,15 @@ import java.io.File;
 public class Goomba extends Sprite {
 
 	static BufferedImage image;
+	static BufferedImage burnedimage;
 
 	boolean right;
 	int turnSteps;
 	int curSteps;
 	final int stepSize=1;
+	int prevX;
+	int frame=0;
+	int burnedframe=-1;
 
 	public Goomba(int x, int y){
 		this.x=x;
@@ -23,11 +27,34 @@ public class Goomba extends Sprite {
 	}
 
 	void update() {
+		prevX=x;
 		x+=stepSize*(right?1:-1);
 		curSteps++;
 		if(curSteps>=turnSteps){
 			curSteps=0;
 			right=!right;
+		}
+		for(Sprite s : m.sprites){
+			if(collidesWith(s)){
+				if(s instanceof Tube||s instanceof Mario)getOutOfObject(s);
+				else if(s instanceof Fireball){
+					if(burnedframe==-1)burnedframe=frame;
+					s.toRemove=true;
+				}
+			}
+		}
+		if(burnedframe!=-1&&frame>=burnedframe+10){
+			toRemove=true;
+		}
+		frame++;
+	}
+
+	void getOutOfObject(Sprite s){
+		if(prevX+w<s.x&&x+w>=s.x){
+			x=s.x-w-1;
+		}
+		else if(prevX>s.x+s.w&&x<=s.x+s.w){
+			x=s.x+s.w+1;
 		}
 	}
 
@@ -40,10 +67,14 @@ public class Goomba extends Sprite {
 			if(image==null){
 				image=ImageIO.read(new File("goomba.png"));
 			}
+			else if(burnedframe!=-1&&burnedimage==null){
+				burnedimage=ImageIO.read(new File("goomba_fire.png"));
+			}
 		}catch(Exception e){
 			e.printStackTrace(System.err);
 			System.exit(1);
 		}
+		if(burnedframe!=-1)return burnedimage;
 		return image;
 	}
 

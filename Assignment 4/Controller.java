@@ -33,7 +33,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	{
 		model.mousePressed(e.getX(), e.getY(), model.scrollPos);
 		if(keyG){
-			model.goombo(e.getX()+model.scrollPos,e.getY());
+			model.spawnGoomba(e.getX()+model.scrollPos,e.getY());
 		}
 	}
 
@@ -54,6 +54,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 			case KeyEvent.VK_L: model.loadState(); break;
             case KeyEvent.VK_SPACE: keySpace = true; break;
 			case KeyEvent.VK_G: keyG = true; break;
+			case KeyEvent.VK_CONTROL: model.shootFlame(); break;
 		}
 	}
 

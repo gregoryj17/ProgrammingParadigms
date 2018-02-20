@@ -33,9 +33,14 @@ class Model
 		}
 	}
 
-	public void goombo(int x, int y){
+	public void spawnGoomba(int x, int y){
 		Goomba g = new Goomba(x,y);
 		sprites.add(g);
+	}
+
+	public void shootFlame(){
+		Fireball f = new Fireball(mario.x,mario.y);
+		sprites.add(f);
 	}
 
 	void scroll(int scrollAmount){
@@ -67,6 +72,12 @@ class Model
 	{
 		for(Sprite s : sprites){
 			s.update();
+		}
+		for(int i=0;i<sprites.size();i++){
+			if(sprites.get(i).toRemove){
+				sprites.remove(i);
+				i--;
+			}
 		}
 	}
 

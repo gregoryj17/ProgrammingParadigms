@@ -12,6 +12,7 @@ public class Mario extends Sprite {
     boolean moving=false;
     static BufferedImage[] images = new BufferedImage[5];
     int prevX,prevY;
+    int heat=0;
 
     public Mario(Model model){
     	x=200;
@@ -38,7 +39,9 @@ public class Mario extends Sprite {
 
 		for(Sprite s : m.sprites){
 			if(collidesWith(s)){
-				getOutOfTube(s);
+				if(s instanceof Tube)getOutOfTube(s);
+				else if(s instanceof Goomba) enemyBounce(s);
+				else if(s instanceof Fireball) heat++;
 			}
 		}
 
@@ -64,6 +67,28 @@ public class Mario extends Sprite {
 		else if(prevY>s.y+s.h&&y<=s.y+s.h){
     		y=s.y+s.h+1;
     		vert_vel=0;
+		}
+	}
+
+	void enemyBounce(Sprite s){
+		if(prevX+w<s.x&&x+w>=s.x){
+			x=s.x-w-1;
+			m.scrollPos=x-200;
+		}
+		else if(prevX>s.x+s.w&&x<=s.x+s.w){
+			x=s.x+s.w+1;
+			m.scrollPos=x-200;
+		}
+
+		if(prevY+h<s.y&&y+h>=s.y){
+			y=s.y-h-1;
+			vert_vel=-20;
+			lastGrounded=frame;
+			s.toRemove=true;
+		}
+		else if(prevY>s.y+s.h&&y<=s.y+s.h){
+			y=s.y+s.h+1;
+			vert_vel=0;
 		}
 	}
 
