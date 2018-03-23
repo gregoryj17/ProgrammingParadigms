@@ -10,6 +10,6 @@ Assignment 3: Mario/Collections
 
 Assignment 4: Polymorphism
 
-Assignment 5: Android App (Not Included Here)
+Assignment 5: Android App (Contained in Separate Repository)
 
 Assignment 6: Deep Copy
