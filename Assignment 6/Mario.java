@@ -14,6 +14,18 @@ public class Mario extends Sprite {
     int prevX,prevY;
     int heat=0;
 
+    public Mario(Mario mario){
+    	super(mario);
+    	vert_vel=mario.vert_vel;
+		frame=mario.frame;
+		lastGrounded=mario.lastGrounded;
+		pic=mario.pic;
+		moving=mario.moving;
+		prevX=mario.prevX;
+		prevY=mario.prevY;
+		heat=mario.heat;
+    }
+
     public Mario(Model model){
     	x=200;
     	y=0;
@@ -97,9 +109,10 @@ public class Mario extends Sprite {
     }
 
     void jump(){
-        if(frame-lastGrounded<=5) {
-            vert_vel -= 5;
+        if(frame-lastGrounded<=1) {
+            vert_vel -= 25;
         }
+        m.jumpCount++;
     }
 
     void moving(boolean left, boolean right){

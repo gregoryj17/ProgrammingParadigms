@@ -16,6 +16,16 @@ public class Goomba extends Sprite {
 	int frame=0;
 	int burnedframe=-1;
 
+	public Goomba(Goomba g){
+		super(g);
+		right=g.right;
+		turnSteps=g.turnSteps;
+		curSteps=g.curSteps;
+		prevX=g.prevX;
+		frame=g.frame;
+		burnedframe=g.burnedframe;
+	}
+
 	public Goomba(int x, int y){
 		this.x=x;
 		this.y=y;
@@ -56,6 +66,7 @@ public class Goomba extends Sprite {
 		}
 		if(burnedframe!=-1&&frame>=burnedframe+10){
 			toRemove=true;
+			m.deadGoombas++;
 		}
 		frame++;
 	}

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public abstract class Sprite {
 
     int x,y,w,h;
-    static Model m;
+    Model m;
     boolean toRemove = false;
 
     abstract void update();
@@ -13,6 +13,22 @@ public abstract class Sprite {
     abstract void draw(Graphics g);
 
     abstract BufferedImage getImage();
+
+    Sprite(){
+
+	}
+
+    Sprite(Sprite s){
+    	x=s.x;
+    	y=s.y;
+    	w=s.w;
+    	h=s.h;
+    	toRemove=s.toRemove;
+	}
+
+    void setModel(Model mod){
+    	m=mod;
+	}
 
     boolean collidesWith(int xx, int ww, int yy, int hh){
     	if(x+w<xx)return false;

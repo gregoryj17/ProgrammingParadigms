@@ -8,13 +8,17 @@ public class Tube extends Sprite{
 	
 	//Tube position
 	static BufferedImage image;
-	
+
 	//Constructs a tube with a position
 	public Tube(int x, int y){
 		this.x=x;
 		this.y=y;
 		w=55;
 		h=400;
+	}
+
+	public Tube(Tube t){
+		super(t);
 	}
 	
 	public Tube(Json json){

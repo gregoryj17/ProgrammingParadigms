@@ -15,6 +15,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	boolean keyDown;
 	boolean keySpace;
 	boolean editMode=false;
+	boolean bot=true;
 	int editType=0;
 
 	
@@ -69,6 +70,14 @@ class Controller implements ActionListener, MouseListener, KeyListener
 				else System.out.println("Changed mode to fireball.");
 				break;
 			}
+			case KeyEvent.VK_P:{
+				bot=!bot;
+			}
+			/*case KeyEvent.VK_C:{
+				Model copy = new Model(model);
+				System.out.println(copy);
+				break;
+			}*/
 		}
 	}
 
@@ -91,6 +100,7 @@ class Controller implements ActionListener, MouseListener, KeyListener
 	void update()
 	{
 		int scrollSpeed = 6;
+
 		if(keyLeft){
 			model.scroll(-1*scrollSpeed);
 		}
@@ -100,7 +110,25 @@ class Controller implements ActionListener, MouseListener, KeyListener
 		if(keyUp||keySpace){
 		    model.mario.jump();
         }
-        model.mario.moving(keyLeft,keyRight);
+
+        if(bot) {
+			// Evaluate each possible action
+			double score_run = model.evaluateAction(model.run, 0);
+			double score_run_and_jump = model.evaluateAction(model.run_and_jump, 0);
+			double score_run_and_shoot = model.evaluateAction(model.run_and_shoot, 0);
+
+			// Do the best one
+			if (score_run_and_shoot > score_run_and_jump && score_run_and_shoot > score_run) {
+				model.scroll(scrollSpeed);
+				model.shootFlame();
+			} else if (score_run_and_jump > score_run) {
+				model.scroll(scrollSpeed);
+				model.mario.jump();
+			} else {
+				model.scroll(scrollSpeed);
+			}
+			model.mario.moving(true, false);
+		}
 	}
 	
 }

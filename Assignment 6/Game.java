@@ -24,7 +24,7 @@ public class Game extends JFrame
 		this.addKeyListener(controller);
 		this.setFocusable(true);
 
-		model.loadState("start.json");
+		model.loadState("AItest.json");
 
 	}
 

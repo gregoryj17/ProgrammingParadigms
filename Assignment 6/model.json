@@ -1,1 +1,1 @@
-{"Tubes":[{"x":557,"y":496},{"x":875,"y":437}],"Goombas":[{"x":766,"y":478,"right":false,"turnSteps":300,"curSteps":9}]}
+{"Tubes":[{"x":557,"y":496},{"x":875,"y":437},{"x":1083,"y":282},{"x":1279,"y":364},{"x":1158,"y":503},{"x":2765,"y":420},{"x":3187,"y":462},{"x":3702,"y":441},{"x":1855,"y":449}],"Goombas":[{"x":1985,"y":478,"right":true,"turnSteps":300,"curSteps":74},{"x":3010,"y":478,"right":true,"turnSteps":300,"curSteps":189},{"x":3371,"y":478,"right":true,"turnSteps":300,"curSteps":69}]}

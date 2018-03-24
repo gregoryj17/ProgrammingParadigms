@@ -10,6 +10,14 @@ public class Fireball extends Sprite {
 	double horiz_vel=4;
 	int prevX,prevY;
 
+	public Fireball(Fireball f){
+		super(f);
+		vert_vel=f.vert_vel;
+		horiz_vel=f.horiz_vel;
+		prevX=f.prevX;
+		prevY=f.prevY;
+	}
+
 	public Fireball(int xx, int yy){
 		x=xx;
 		y=yy;
