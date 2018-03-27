@@ -119,13 +119,11 @@ class Controller implements ActionListener, MouseListener, KeyListener
 
 			// Do the best one
 			if (score_run_and_shoot > score_run_and_jump && score_run_and_shoot > score_run) {
-				model.scroll(scrollSpeed);
-				model.shootFlame();
+				model.doAction(model.run_and_shoot);
 			} else if (score_run_and_jump > score_run) {
-				model.scroll(scrollSpeed);
-				model.mario.jump();
+				model.doAction(model.run_and_jump);
 			} else {
-				model.scroll(scrollSpeed);
+				model.doAction(model.run);
 			}
 			model.mario.moving(true, false);
 		}

@@ -97,6 +97,7 @@ public class Mario extends Sprite {
 			vert_vel=-20;
 			lastGrounded=frame-4;
 			s.toRemove=true;
+			if(s instanceof Goomba)m.deadGoombas++;
 		}
 		else if(prevY>s.y+s.h&&y<=s.y+s.h){
 			y=s.y+s.h+1;
