@@ -432,7 +432,7 @@ Game.prototype.onTimer = function()
 let game = new Game();
 let timer = setInterval(function() { game.onTimer(); }, 40);
 
-var favnum = "Player";
+var favnum = "Player "+(Math.floor(Math.random() * 2000)+1);
 
 function httpPost(url, payload, callback)
 {
@@ -466,11 +466,12 @@ function cb(response)
 	let ob = JSON.parse(response);
 
 	//alert("The embedded message is: " + ob.msg);
-
-	var x = document.getElementById("mySelect");
-    var option = document.createElement("option");
-    option.text = ob.fav_num + ": " + ob.msg;
-    x.add(option, x[0]);
+    //if(ob.type=="msg"){
+        var x = document.getElementById("mySelect");
+        var option = document.createElement("option");
+        option.text = ob.fav_num + ": " + ob.msg;
+        x.add(option, x[0]);
+    //}
 }
 
 function sayhi()
@@ -480,19 +481,13 @@ function sayhi()
 
 	// Make a JSON blob
 	let ob = {};
+	ob.type = "msg";
 	ob.message = msg.value;
 	ob.fav_num = favnum;
 	let json_string = JSON.stringify(ob);
 
 	// Send the JSON blob to the server
 	httpPost("ajax_handler.html", json_string, cb);
-}
-
-function myFunction() {
-    var x = document.getElementById("mySelect");
-    var option = document.createElement("option");
-    option.text = "Kiwi";
-    x.add(option, x[0]);
 }
 
 function setnumber() {
@@ -503,10 +498,6 @@ function setnumber() {
 
 </script>
 </head><body>
-Enter your chat name:
-<input type="text" id="mynumber" value="">
-<input type="button" onclick="setnumber();" value="set">
-<br>
 
 Here is a place to enter a message:<br>
   <input type="text" id="mymessage" value="hi">
