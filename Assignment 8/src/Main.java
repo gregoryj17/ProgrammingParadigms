@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.awt.Desktop;
 import java.net.URI;
@@ -9,6 +10,8 @@ import java.nio.file.Paths;
 
 class Main
 {
+	static ArrayList<Socket> sockets = new ArrayList<>();
+
 	static void sendLine(PrintWriter out, String line)
 	{
 		out.print(line); // Send over the socket
@@ -70,8 +73,16 @@ class Main
 		String payload = String.valueOf(incomingPayload);
 		System.out.println("Received the following payload: " + payload);
 
+		int startindex = payload.indexOf("\"message\":\"")+11;
+		int endindex = payload.indexOf("\"",startindex);
+		String message = payload.substring(startindex,endindex);
+
+		startindex = payload.indexOf("\"fav_num\":")+10;
+		endindex = payload.indexOf("}",startindex);
+		String fav_num = payload.substring(startindex,endindex);
+
 		// Make a response
-		String response = "{\"msg\":\"Thanks for the spiffy message\",\"fav_num\":-1}";
+		String response = "{\"msg\":\""+message+"\",\"fav_num\":"+fav_num+"}";
 
 		// Send HTTP headers
 		System.out.println("----------The server replied: ----------");
@@ -109,6 +120,8 @@ class Main
 			Socket clientSocket = serverSocket.accept(); // This call blocks until a client connects
 			BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			OutputStream os = clientSocket.getOutputStream();
+
+			sockets.add(clientSocket);
 
 			// Read the HTTP headers
 			String headerLine;
@@ -154,6 +167,7 @@ class Main
 
 			// Hang up
 			os.flush();
+			sockets.remove(clientSocket);
 			clientSocket.close();
 		}
 	}

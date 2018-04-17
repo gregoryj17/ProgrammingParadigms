@@ -432,7 +432,7 @@ Game.prototype.onTimer = function()
 let game = new Game();
 let timer = setInterval(function() { game.onTimer(); }, 40);
 
-var favnum = 3.14159;
+var favnum = "Player";
 
 function httpPost(url, payload, callback)
 {
@@ -469,8 +469,8 @@ function cb(response)
 
 	var x = document.getElementById("mySelect");
     var option = document.createElement("option");
-    option.text = ob.msg;
-    x.add(option);
+    option.text = ob.fav_num + ": " + ob.msg;
+    x.add(option, x[0]);
 }
 
 function sayhi()
@@ -492,7 +492,7 @@ function myFunction() {
     var x = document.getElementById("mySelect");
     var option = document.createElement("option");
     option.text = "Kiwi";
-    x.add(option);
+    x.add(option, x[0]);
 }
 
 function setnumber() {
@@ -503,14 +503,12 @@ function setnumber() {
 
 </script>
 </head><body>
-Which player are you?:
-<input type="text" id="mynumber" value="1">
+Enter your chat name:
+<input type="text" id="mynumber" value="">
 <input type="button" onclick="setnumber();" value="set">
 <br>
 
-Here is a picture of a turtle:
-<img src="turtle.png"><br><br>
-And here is a place to enter a message:<br>
+Here is a place to enter a message:<br>
   <input type="text" id="mymessage" value="hi">
 <input type="button" onclick="sayhi();" value="send">
 
@@ -518,12 +516,8 @@ And here is a place to enter a message:<br>
 
 <form>
     <select id="mySelect" size="8">
-        <option>Apple</option>
-        <option>Pear</option>
-        <option>Banana</option>
-        <option>Orange</option>
+        <option>Welcome to the chat! Messages will be displayed in reverse chronological order.</option>
     </select>
 </form>
-<button type="button" onclick="myFunction()">Insert option</button>
 
 </body></html>
