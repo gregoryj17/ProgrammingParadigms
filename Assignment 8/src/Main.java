@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.awt.Desktop;
 import java.net.URI;
@@ -9,6 +10,9 @@ import java.nio.file.Paths;
 
 class Main
 {
+
+	static ArrayList<Message> messages = new ArrayList<>();
+
 	static void sendLine(PrintWriter out, String line)
 	{
 		out.print(line); // Send over the socket
@@ -70,8 +74,23 @@ class Main
 		String payload = String.valueOf(incomingPayload);
 		System.out.println("Received the following payload: " + payload);
 
+		Json json = Json.parse(payload);
+		if(json.getString("type").equals("msg")) {
+			String sender = json.getString("fav_num");
+			String message = json.getString("message");
+			messages.add(new Message(sender, message));
+		}
+		else if(json.getString("type").equals("getmsg")){
+			int i = (int)json.getLong("lastreceived");
+			System.out.println(i);
+			for(;i<messages.size();i++){
+				String newmsg = "{\"type\":\"msg\",\"msg\":\""+messages.get(i).message+"\",\"fav_num\":\""+messages.get(i).sender+"\",\"id\":"+(i+1)+"}";
+				sendResponse(os, url, incomingPayload, newmsg);
+			}
+		}
+
 		// Make a response
-		String response = "{\"msg\":\"Thanks for the spiffy message\",\"fav_num\":-1}";
+		String response = "{\"type\":\"none\",\"msg\":\"Thanks for the spiffy message\",\"fav_num\":-1}";
 
 		// Send HTTP headers
 		System.out.println("----------The server replied: ----------");
@@ -83,6 +102,24 @@ class Main
 		sendLine(out, "Date: " + dateString);
 		sendLine(out, "Last-Modified: " + dateString);
 		sendLine(out, "Connection: close");
+		sendLine(out, "");
+
+		// Send the response
+		sendLine(out, response);
+		out.flush();
+	}
+
+	static void sendResponse(OutputStream os, String url, char[] incomingPayload, String response){
+		// Send HTTP headers
+		System.out.println("----------The server replied: ----------");
+		String dateString = (new Date()).toGMTString();
+		PrintWriter out = new PrintWriter(os, true);
+		sendLine(out, "HTTP/1.1 200 OK");
+		sendLine(out, "Content-Type: application/json");
+		sendLine(out, "Content-Length: " + Integer.toString(response.length()));
+		sendLine(out, "Date: " + dateString);
+		sendLine(out, "Last-Modified: " + dateString);
+		sendLine(out, "Connection: keep-alive");
 		sendLine(out, "");
 
 		// Send the response
@@ -156,5 +193,15 @@ class Main
 			os.flush();
 			clientSocket.close();
 		}
+	}
+}
+
+class Message{
+	public String sender;
+	public String message;
+
+	public Message(String sender, String message){
+		this.sender=sender;
+		this.message=message;
 	}
 }

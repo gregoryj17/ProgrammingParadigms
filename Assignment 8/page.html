@@ -466,12 +466,13 @@ function cb(response)
 	let ob = JSON.parse(response);
 
 	//alert("The embedded message is: " + ob.msg);
-    //if(ob.type=="msg"){
+    if(ob.type=="msg"){
         var x = document.getElementById("mySelect");
         var option = document.createElement("option");
         option.text = ob.fav_num + ": " + ob.msg;
         x.add(option, x[0]);
-    //}
+        lastreceived = ob.id;
+    }
 }
 
 function sayhi()
@@ -495,6 +496,21 @@ function setnumber() {
     favnum = x.value;
 }
 
+let lastreceived=0;
+
+function getmessages(){
+    // Make a JSON blob
+	let ob = {};
+	ob.type = "getmsg";
+	ob.lastreceived = lastreceived;
+	ob.fav_num = favnum;
+	let json_string = JSON.stringify(ob);
+
+	// Send the JSON blob to the server
+	httpPost("ajax_handler.html", json_string, cb);
+}
+
+let timer2 = setInterval(function() { getmessages(); }, 40);
 
 </script>
 </head><body>
@@ -502,7 +518,6 @@ function setnumber() {
 Here is a place to enter a message:<br>
   <input type="text" id="mymessage" value="hi">
 <input type="button" onclick="sayhi();" value="send">
-
 
 
 <form>
