@@ -1,5 +1,5 @@
 <html><head>
-    <canvas id="myCanvas" width="1000" height="600" style="border:1px solid #cccccc;"></canvas>
+    <canvas id="myCanvas" width="800" height="400" style="border:1px solid #cccccc;"></canvas>
     <br>
 <script type="text/javascript">
 
@@ -7,6 +7,8 @@ function Sprite(x, y, image_url, update_method, type, model)
 {
 	this.x = x;
 	this.y = y;
+	this.dest_x = x;
+	this.dest_y = y;
 	this.image = new Image();
 	this.image.src = image_url;
 	this.update = update_method;
@@ -263,13 +265,10 @@ function Model()
 	this.scrollPos = 0;
 	this.startLevel = {"Tubes":[{"x":557,"y":496},{"x":875,"y":437}],"Goombas":[{"x":766,"y":478,"right":false,"turnSteps":300,"curSteps":9}]};
 	this.sprites = [];
-	this.mario = new Sprite(200, 100, "mario0.png", Sprite.prototype.mario_move, "mario", this);
-	//this.sprites.push(this.mario);
-	this.resetLevel();
-	/*this.tube = new Sprite(500,500,"tube.png", Sprite.prototype.dontmove,"tube",this);
-	this.sprites.push(this.tube);
-	this.goomba = new Sprite(600,500,"goomba.png", Sprite.prototype.goomba_move,"goomba",this);
-	this.sprites.push(this.goomba);*/
+	this.mario = new Sprite(200, 300, "mario0.png", Sprite.prototype.go_toward_destination, "mario", this);
+	this.sprites.push(this.mario);
+	this.goomba = new Sprite(500,300,"goomba.png", Sprite.prototype.go_toward_destination,"goomba",this);
+	this.sprites.push(this.goomba);
 }
 
 Model.prototype.resetLevel = function(){
@@ -303,6 +302,37 @@ Model.prototype.update = function()
 	}
 }
 
+Model.prototype.movemario = function(dir){
+    if(dir=="left"){
+        this.mario.dest_x-=4;
+    }
+    else if(dir=="right"){
+        this.mario.dest_x+=4;
+    }
+    else if(dir=="up"){
+        this.mario.dest_y-=4;
+    }
+    else if(dir=="down"){
+        this.mario.dest_y+=4;
+    }
+    console.log(dir);
+}
+
+Model.prototype.movegoomba = function(dir){
+    if(dir=="left"){
+        this.goomba.dest_x-=4;
+    }
+    else if(dir=="right"){
+        this.goomba.dest_x+=4;
+    }
+    else if(dir=="up"){
+        this.goomba.dest_y-=4;
+    }
+    else if(dir=="down"){
+        this.goomba.dest_y+=4;
+    }
+}
+
 Model.prototype.onclick = function(x, y)
 {
 	for(let i = 0; i < this.sprites.length; i++)
@@ -313,8 +343,9 @@ Model.prototype.onclick = function(x, y)
 
 Model.prototype.move = function(dx, dy)
 {
-	this.scrollPos+=dx;
+	this.mario.dest_x+=dx;
 	this.mario.moving=(dx!=0)
+	this.goomba.dest_x+=dx;
 	if(dy<0){
 		this.mario.jump();
 	}
@@ -383,7 +414,7 @@ Controller.prototype.keyDown = function(event)
 	else if(event.keyCode == 37) this.key_left = true;
 	else if(event.keyCode == 38) this.key_up = true;
 	else if(event.keyCode == 40) this.key_down = true;
-	else if(event.keyCode == 17) this.model.shootFlame();
+	//else if(event.keyCode == 17) this.model.shootFlame();
 }
 
 Controller.prototype.keyUp = function(event)
@@ -399,12 +430,20 @@ Controller.prototype.update = function()
 {
 	let dx = 0;
 	let dy = 0;
-	if(this.key_right) dx+=4;
-	if(this.key_left) dx-=4;
-	if(this.key_up) dy-=4;
-	if(this.key_down) dy+=4;
+	if(this.key_right){
+	    doaction("right");
+    }
+	if(this.key_left){
+	    doaction("left");
+    }
+	if(this.key_up){
+	    doaction("up");
+    }
+	if(this.key_down){
+	    doaction("down");
+    }
 	//if(dx != 0 || dy != 0)
-	this.model.move(dx, dy);
+	//this.model.move(dx, dy);
 }
 
 
@@ -471,11 +510,21 @@ function cb(response)
         var option = document.createElement("option");
         option.text = ob.fav_num + ": " + ob.msg;
         x.add(option, x[0]);
-        lastreceived = ob.id;
+        lastreceivedmsg = ob.id;
+    }
+    if(ob.type=="action"){
+        if(ob.character=="mario"){
+            game.model.movemario(ob.movement);
+        }
+        else if(ob.character=="goomba"){
+            game.model.movegoomba(ob.movement);
+        }
+        console.log(ob);
+        lastreceivedaction = ob.id;
     }
 }
 
-function sayhi()
+function sendmessage()
 {
 	// Find the text field
 	let msg = document.getElementById("mymessage");
@@ -491,18 +540,10 @@ function sayhi()
 	httpPost("ajax_handler.html", json_string, cb);
 }
 
-function setnumber() {
-    var x = document.getElementById("mynumber");
-    favnum = x.value;
-}
-
-let lastreceived=0;
-
-function getmessages(){
-    // Make a JSON blob
-	let ob = {};
-	ob.type = "getmsg";
-	ob.lastreceived = lastreceived;
+function doaction(){
+    let ob = {};
+	ob.type = "action";
+	ob.move = "left";
 	ob.fav_num = favnum;
 	let json_string = JSON.stringify(ob);
 
@@ -510,14 +551,89 @@ function getmessages(){
 	httpPost("ajax_handler.html", json_string, cb);
 }
 
-let timer2 = setInterval(function() { getmessages(); }, 40);
+function doaction(dir){
+    let ob = {};
+	ob.type = "action";
+	ob.move = dir;
+	ob.fav_num = favnum;
+	let json_string = JSON.stringify(ob);
+
+	// Send the JSON blob to the server
+	httpPost("ajax_handler.html", json_string, cb);
+}
+
+function setnumber() {
+    var x = document.getElementById("mynumber");
+    favnum = x.value;
+}
+
+let lastreceivedmsg=0;
+let lastreceivedaction=0;
+
+function getmessages(){
+    // Make a JSON blob
+	let ob = {};
+	ob.type = "getmsg";
+	ob.lastreceived = lastreceivedmsg;
+	ob.fav_num = favnum;
+	let json_string = JSON.stringify(ob);
+
+	// Send the JSON blob to the server
+	httpPost("ajax_handler.html", json_string, cb);
+}
+
+function getactions(){
+    // Make a JSON blob
+	let ob = {};
+	ob.type = "getaction";
+	ob.lastreceived = lastreceivedaction;
+	ob.fav_num = favnum;
+	let json_string = JSON.stringify(ob);
+
+	// Send the JSON blob to the server
+	httpPost("ajax_handler.html", json_string, cb);
+}
+
+function getstuff(){
+    getmessages();
+    getactions();
+}
+
+let timer2 = setInterval(function() { getstuff(); }, 100);
+
+function iammario(){
+    // Make a JSON blob
+	let ob = {};
+	ob.type = "character";
+	ob.character = "mario";
+	ob.fav_num = favnum;
+	let json_string = JSON.stringify(ob);
+
+	// Send the JSON blob to the server
+	httpPost("ajax_handler.html", json_string, cb);
+}
+
+function iamgoomba(){
+    // Make a JSON blob
+	let ob = {};
+	ob.type = "character";
+	ob.character = "goomba";
+	ob.fav_num = favnum;
+	let json_string = JSON.stringify(ob);
+
+	// Send the JSON blob to the server
+	httpPost("ajax_handler.html", json_string, cb);
+}
 
 </script>
 </head><body>
 
 Here is a place to enter a message:<br>
   <input type="text" id="mymessage" value="hi">
-<input type="button" onclick="sayhi();" value="send">
+<input type="button" onclick="sendmessage();" value="send">
+
+<input type="button" onclick="iammario();" value="become mario">
+<input type="button" onclick="iamgoomba();" value="become goomba">
 
 
 <form>

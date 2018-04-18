@@ -12,6 +12,9 @@ class Main
 {
 
 	static ArrayList<Message> messages = new ArrayList<>();
+	static ArrayList<Action> actions = new ArrayList<>();
+	static String marioPlayer;
+	static String goombaPlayer;
 
 	static void sendLine(PrintWriter out, String line)
 	{
@@ -88,9 +91,36 @@ class Main
 				sendResponse(os, url, incomingPayload, newmsg);
 			}
 		}
+		else if(json.getString("type").equals("getaction")){
+			int i = (int)json.getLong("lastreceived");
+			System.out.println(i);
+			for(;i<actions.size();i++){
+				String newmsg = "{\"type\":\"action\",\"character\":\""+actions.get(i).character+"\",\"movement\":\""+actions.get(i).movement+"\",\"id\":"+(i+1)+"}";
+				sendResponse(os, url, incomingPayload, newmsg);
+			}
+		}
+		else if(json.getString("type").equals("character")){
+			if(json.getString("character").equals("mario")){
+				marioPlayer=json.getString("fav_num");
+			}
+			else if(json.getString("character").equals("goomba")){
+				goombaPlayer=json.getString("fav_num");
+				if(marioPlayer==json.getString("fav_num")){
+					marioPlayer="";
+				}
+			}
+		}
+		else if(json.getString("type").equals("action")){
+			if(json.getString("fav_num").equals(marioPlayer)){
+				actions.add(new Action("mario",json.getString("move")));
+			}
+			else if(json.getString("fav_num").equals(goombaPlayer)){
+				actions.add(new Action("goomba",json.getString("move")));
+			}
+		}
 
 		// Make a response
-		String response = "{\"type\":\"none\",\"msg\":\"Thanks for the spiffy message\",\"fav_num\":-1}";
+		String response = "{\"type\":\"closer\",\"msg\":\"Thanks for the spiffy message\",\"fav_num\":-1}";
 
 		// Send HTTP headers
 		System.out.println("----------The server replied: ----------");
@@ -203,5 +233,15 @@ class Message{
 	public Message(String sender, String message){
 		this.sender=sender;
 		this.message=message;
+	}
+}
+
+class Action{
+	public String character;
+	public String movement;
+
+	public Action(String character, String movement){
+		this.character=character;
+		this.movement=movement;
 	}
 }
