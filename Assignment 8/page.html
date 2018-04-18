@@ -65,13 +65,13 @@ Sprite.prototype.go_toward_destination = function()
 		return;
 
 	if(this.x < this.dest_x)
-		this.x++;
+		this.x+=4;
 	else if(this.x > this.dest_x)
-		this.x--;
+		this.x-=4;
 	if(this.y < this.dest_y)
-		this.y++;
+		this.y+=4;
 	else if(this.y > this.dest_y)
-		this.y--;
+		this.y-=4;
 }
 
 Sprite.prototype.sit_still = function()
@@ -599,7 +599,7 @@ function getstuff(){
     getactions();
 }
 
-let timer2 = setInterval(function() { getstuff(); }, 100);
+let timer2 = setInterval(function() { getstuff(); }, 500);
 
 function iammario(){
     // Make a JSON blob
