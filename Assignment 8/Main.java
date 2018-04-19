@@ -11,10 +11,17 @@ import java.nio.file.Paths;
 class Main
 {
 
-	static ArrayList<Message> messages = new ArrayList<>();
-	static ArrayList<Action> actions = new ArrayList<>();
+	static ArrayList<Message> messages1 = new ArrayList<>();
+	static ArrayList<Message> messages2 = new ArrayList<>();
+	
+	static ArrayList<Action> actions1 = new ArrayList<>();
+	static ArrayList<Action> actions2 = new ArrayList<>();
+	
 	static String marioPlayer;
 	static String goombaPlayer;
+	
+	static String player1="";
+	static String player2="";
 
 	static void sendLine(PrintWriter out, String line)
 	{
@@ -78,25 +85,53 @@ class Main
 		System.out.println("Received the following payload: " + payload);
 
 		Json json = Json.parse(payload);
+		
+		if(player1.equals("")){
+			player1=json.getString("fav_num");
+		}
+		else if(player2.equals("")&&!player1.equals(json.getString("fav_num"))){
+			player2=json.getString("fav_num");
+		}
+		
 		if(json.getString("type").equals("msg")) {
 			String sender = json.getString("fav_num");
 			String message = json.getString("message");
-			messages.add(new Message(sender, message));
+			Message m = new Message(sender, message);
+			messages1.add(m);
+			messages2.add(m);
 		}
 		else if(json.getString("type").equals("getmsg")){
-			int i = (int)json.getLong("lastreceived");
-			System.out.println(i);
-			for(;i<messages.size();i++){
-				String newmsg = "{\"type\":\"msg\",\"msg\":\""+messages.get(i).message+"\",\"fav_num\":\""+messages.get(i).sender+"\",\"id\":"+(i+1)+"}";
-				sendResponse(os, url, incomingPayload, newmsg);
+			String client = json.getString("fav_num");
+			if(client.equals(player1)){
+				if(messages1.size()>0){
+					String newmsg = "{\"type\":\"msg\",\"msg\":\""+messages1.get(0).message+"\",\"fav_num\":\""+messages1.get(0).sender+"\",\"id\":1}";
+					sendResponse(os, url, incomingPayload, newmsg);
+					messages1.remove(0);
+				}
+			}
+			else if(client.equals(player2)){
+				if(messages2.size()>0){
+					String newmsg = "{\"type\":\"msg\",\"msg\":\""+messages2.get(0).message+"\",\"fav_num\":\""+messages2.get(0).sender+"\",\"id\":1}";
+					sendResponse(os, url, incomingPayload, newmsg);
+					messages2.remove(0);
+				}
 			}
 		}
 		else if(json.getString("type").equals("getaction")){
-			int i = (int)json.getLong("lastreceived");
-			System.out.println(i);
-			for(;i<actions.size();i++){
-				String newmsg = "{\"type\":\"action\",\"character\":\""+actions.get(i).character+"\",\"movement\":\""+actions.get(i).movement+"\",\"id\":"+(i+1)+"}";
-				sendResponse(os, url, incomingPayload, newmsg);
+			String client = json.getString("fav_num");
+			if(client.equals(player1)){
+				if(actions1.size()>0){
+					String newmsg = "{\"type\":\"action\",\"character\":\""+actions1.get(0).character+"\",\"movement\":\""+actions1.get(0).movement+"\",\"id\":1}";
+					sendResponse(os, url, incomingPayload, newmsg);
+					actions1.remove(0);
+				}
+			}
+			else if(client.equals(player2)){
+				if(actions2.size()>0){
+					String newmsg = "{\"type\":\"action\",\"character\":\""+actions2.get(0).character+"\",\"movement\":\""+actions2.get(0).movement+"\",\"id\":1}";
+					sendResponse(os, url, incomingPayload, newmsg);
+					actions2.remove(0);
+				}
 			}
 		}
 		else if(json.getString("type").equals("character")){
@@ -112,10 +147,14 @@ class Main
 		}
 		else if(json.getString("type").equals("action")){
 			if(json.getString("fav_num").equals(marioPlayer)){
-				actions.add(new Action("mario",json.getString("move")));
+				Action a = new Action("mario",json.getString("move"));
+				actions1.add(a);
+				actions2.add(a);
 			}
 			else if(json.getString("fav_num").equals(goombaPlayer)){
-				actions.add(new Action("goomba",json.getString("move")));
+				Action a = new Action("goomba",json.getString("move"));
+				actions1.add(a);
+				actions2.add(a);
 			}
 		}
 

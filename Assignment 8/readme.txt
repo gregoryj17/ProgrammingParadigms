@@ -1,0 +1,2 @@
+Rather than be clients 0 and 1, the clients are assigned random numbers, and can choose their character.
+The buttons labeled "become mario" and "become goomba" allow clients to take control of mario or the goomba, respectively.
